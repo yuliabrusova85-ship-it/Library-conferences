@@ -117,7 +117,7 @@ async function main() {
   const empty     = results.filter(r => !r.dates?.length && !r.e).map(r => r.n);
   console.log(`Done — ${withDates.length} with dates, ${errors.length} errors`);
   const output = {
-    at: new Date().toISOString().slice(0, 10),
+    at: new Date().toISOString().slice(0, 16).replace('T', ' ') + ' UTC',
     dates: withDates,
     errors: errors.map(r => ({ n: r.n, e: r.e })),
     empty
