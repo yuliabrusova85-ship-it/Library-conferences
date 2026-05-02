@@ -4,608 +4,914 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI in Libraries — Conference Tracker</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;1,8..60,300;1,8..60,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
   :root {
-    --parchment: #F3EDE1;
-    --card:      #FAF7F0;
-    --card-bd:   #E2D9C7;
-    --navy:      #1B2A4A;
-    --gold:      #9A6E1A;
-    --crimson:   #7C1A28;
-    --amber:     #8E4B15;
-    --sage:      #2A5218;
-    --ink:       #1C1917;
-    --muted:     #68624F;
-    --faint:     #C9C0AE;
-    --faint2:    #E8E1D4;
+    --navy:       #1a2340;
+    --navy-mid:   #243055;
+    --navy-light: #2e3d6e;
+    --slate:      #4a5568;
+    --slate-light:#6b7a99;
+    --amber:      #d4882a;
+    --amber-light:#e8a84a;
+    --amber-pale: #fdf3e3;
+    --green:      #2d7a5f;
+    --green-light:#3a9b78;
+    --green-pale: #e8f5ef;
+    --crimson:    #8b2e2e;
+    --crimson-pale:#fdf0f0;
+    --gray:       #8a9bb5;
+    --gray-pale:  #f4f6fa;
+    --paper:      #fafbfd;
+    --border:     #dde3ef;
+    --text:       #1e2a3b;
+    --text-light: #5a6a85;
+    --card-bg:    #ffffff;
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: 'Crimson Pro', Georgia, serif;
-    background: var(--parchment);
-    color: var(--ink);
-    line-height: 1.6;
+    font-family: 'Source Serif 4', Georgia, serif;
+    background: var(--paper);
+    color: var(--text);
+    line-height: 1.65;
     min-height: 100vh;
-    position: relative;
   }
 
-  /* Subtle paper grain */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-    background-image:
-      repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 23px,
-        rgba(110, 85, 40, 0.018) 23px,
-        rgba(110, 85, 40, 0.018) 24px
-      );
-  }
-
-  .page {
-    position: relative;
-    z-index: 1;
-    max-width: 880px;
-    margin: 0 auto;
-    padding: 3.5rem 2rem 6rem;
-  }
-
-  /* ─────────────── HEADER ─────────────── */
-
+  /* ── HEADER ── */
   header {
-    text-align: center;
-    margin-bottom: 3.5rem;
-    animation: riseIn .7s ease both;
+    background: var(--navy);
+    background-image:
+      radial-gradient(ellipse at 20% 50%, rgba(212,136,42,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(46,61,110,0.8) 0%, transparent 50%);
+    padding: 3rem 2rem 2.5rem;
+    position: relative;
+    overflow: hidden;
   }
 
-  .header-top-rule {
-    display: flex;
-    align-items: center;
-    gap: 1.1rem;
-    margin-bottom: 1.6rem;
-  }
-  .header-top-rule::before,
-  .header-top-rule::after {
+  header::before {
     content: '';
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--navy) 40%, var(--navy) 60%, transparent);
-    opacity: .35;
-  }
-  .header-orn {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: .65rem;
-    letter-spacing: .35em;
-    color: var(--gold);
-    padding: 0 .2rem;
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: repeating-linear-gradient(
+      0deg, transparent, transparent 39px,
+      rgba(255,255,255,0.03) 39px, rgba(255,255,255,0.03) 40px
+    );
+    pointer-events: none;
   }
 
-  .header-kicker {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: .62rem;
-    font-weight: 600;
-    letter-spacing: .2em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: .8rem;
+  .header-inner { max-width: 980px; margin: 0 auto; position: relative; }
+
+  .header-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .7rem; letter-spacing: .2em; text-transform: uppercase;
+    color: var(--amber-light); margin-bottom: 1rem;
+    display: flex; align-items: center; gap: .75rem;
+  }
+  .header-eyebrow::before {
+    content: ''; display: inline-block; width: 2rem;
+    height: 1px; background: var(--amber-light);
   }
 
   h1 {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: clamp(2.2rem, 5vw, 3.4rem);
-    font-weight: 700;
-    color: var(--navy);
-    line-height: 1.1;
-    margin-bottom: .35rem;
-    letter-spacing: -.01em;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+    font-weight: 700; color: #fff; line-height: 1.25;
+    margin-bottom: 1.25rem; max-width: 700px;
+  }
+  h1 em { font-style: italic; font-weight: 400; color: var(--amber-light); }
+
+  .header-sub-card {
+    display: inline-flex; flex-direction: column; gap: .3rem;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(212,136,42,.3);
+    border-left: 3px solid var(--amber);
+    border-radius: 6px; padding: .85rem 1.25rem; max-width: 640px;
+  }
+  .header-sub-card .line1 {
+    font-family: 'Source Serif 4', serif; font-size: .9rem;
+    font-style: italic; color: rgba(255,255,255,.9);
+  }
+  .header-sub-card .line2 {
+    font-family: 'Source Serif 4', serif; font-size: .78rem;
+    font-weight: 300; color: rgba(255,255,255,.5); letter-spacing: .01em;
   }
 
-  h1 span {
-    font-style: italic;
-    font-weight: 400;
-    color: var(--crimson);
+  .header-updated {
+    margin-top: 1.25rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .68rem; color: rgba(255,255,255,.3); letter-spacing: .1em;
   }
 
-  .header-sub {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-style: italic;
-    font-size: 1.1rem;
-    color: var(--muted);
-    margin-bottom: 1.4rem;
-    letter-spacing: .01em;
+  /* ── FILTER BAR ── */
+  .filter-section {
+    background: var(--navy-mid);
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    position: sticky; top: 0; z-index: 100; padding: 0 2rem;
   }
+  .filter-inner {
+    max-width: 980px; margin: 0 auto;
+    display: flex; align-items: center; gap: .5rem;
+    padding: .75rem 0; overflow-x: auto; scrollbar-width: none;
+  }
+  .filter-inner::-webkit-scrollbar { display: none; }
 
-  .header-meta {
-    display: inline-flex;
-    align-items: center;
-    gap: 0;
-    border: 1px solid var(--card-bd);
-    background: var(--card);
+  .filter-label {
+    font-family: 'JetBrains Mono', monospace; font-size: .65rem;
+    letter-spacing: .15em; text-transform: uppercase;
+    color: rgba(255,255,255,.35); white-space: nowrap; margin-right: .25rem;
   }
+  .filter-btn {
+    font-family: 'Source Serif 4', serif; font-size: .8rem;
+    padding: .35rem .85rem; border-radius: 20px;
+    border: 1px solid rgba(255,255,255,.15); background: transparent;
+    color: rgba(255,255,255,.6); cursor: pointer; white-space: nowrap;
+    transition: all .2s;
+  }
+  .filter-btn:hover { border-color: var(--amber); color: var(--amber-light); }
+  .filter-btn.active { background: var(--amber); border-color: var(--amber); color: var(--navy); font-weight: 500; }
 
-  .meta-cell {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: .65rem;
-    color: var(--muted);
-    letter-spacing: .04em;
-    padding: .4rem .9rem;
-  }
-  .meta-cell + .meta-cell {
-    border-left: 1px solid var(--card-bd);
-  }
+  /* ── MAIN ── */
+  main { max-width: 980px; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
 
-  .header-bot-rule {
-    margin-top: 1.8rem;
-    position: relative;
-    border: none;
-    border-top: 1px solid var(--faint);
-  }
-  .header-bot-rule::after {
-    content: '◆';
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    background: var(--parchment);
-    padding: 0 .6rem;
-    color: var(--gold);
-    font-size: .55rem;
-  }
+  /* ── STATS ── */
+  .stats { display: flex; gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap; }
+  .stat { display: flex; flex-direction: column; gap: .15rem; }
+  .stat-number { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--navy); line-height: 1; }
+  .stat-label { font-family: 'Source Serif 4', serif; font-size: .75rem; font-weight: 300; color: var(--text-light); }
+  .stat-open .stat-number { color: var(--green); }
+  .stat-urgent .stat-number { color: var(--crimson); }
+  .stat-divider { width: 1px; background: var(--border); align-self: stretch; }
 
-  /* ─────────────── SECTION ─────────────── */
+  /* ── LEGEND ── */
+  .legend {
+    display: flex; align-items: center; gap: 1.25rem;
+    padding: .85rem 1.25rem; background: var(--gray-pale);
+    border: 1px solid var(--border); border-radius: 8px;
+    margin-bottom: 2rem; flex-wrap: wrap;
+  }
+  .legend-item { display: flex; align-items: center; gap: .5rem; font-family: 'Source Serif 4', serif; font-size: .8rem; color: var(--text-light); }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+  .legend-label { font-size: .85rem; color: var(--text); }
 
+  /* ── SECTION ── */
+  .section { margin-bottom: 3rem; }
   .section-header {
-    display: flex;
-    align-items: baseline;
-    gap: 1rem;
-    margin: 3.2rem 0 1.4rem;
+    display: flex; align-items: baseline; gap: 1rem;
+    margin-bottom: 1.25rem; padding-bottom: .75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-number { font-family: 'JetBrains Mono', monospace; font-size: .65rem; letter-spacing: .15em; color: var(--amber); text-transform: uppercase; white-space: nowrap; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 600; color: var(--navy); }
+  .section-count { font-family: 'Source Serif 4', serif; font-size: .8rem; color: var(--text-light); margin-left: auto; white-space: nowrap; }
+
+  /* ── CARD GRID ── */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1.25rem 1.25rem 1rem;
+    display: flex; flex-direction: column; gap: .6rem;
+    transition: box-shadow .2s, transform .2s;
+    position: relative; overflow: hidden;
+  }
+  .card:hover { box-shadow: 0 6px 24px rgba(26,35,64,.1); transform: translateY(-2px); }
+
+  .card::before { content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 4px; }
+
+  .card.status-open   { border-color: #c8e6da; background: linear-gradient(135deg,#fff 0%,#f5fbf8 100%); }
+  .card.status-open::before { background: var(--green); }
+  .card.status-urgent { border-color: #f5caca; background: linear-gradient(135deg,#fff 0%,#fdf5f5 100%); }
+  .card.status-urgent::before { background: var(--crimson); }
+  .card.status-watch  { border-color: #f0dfc0; background: linear-gradient(135deg,#fff 0%,#fffaf2 100%); }
+  .card.status-watch::before { background: var(--amber); }
+  .card.status-passed { border-color: var(--border); background: var(--card-bg); }
+  .card.status-passed::before { background: var(--gray); }
+
+  /* Badge */
+  .badge {
+    display: inline-flex; align-items: center; gap: .35rem;
+    font-family: 'JetBrains Mono', monospace; font-size: .62rem;
+    font-weight: 500; letter-spacing: .08em; text-transform: uppercase;
+    padding: .25rem .6rem; border-radius: 4px; width: fit-content;
+  }
+  .badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+  .badge-open    { background: var(--green-pale); color: var(--green); }
+  .badge-open::before { background: var(--green-light); }
+  .badge-urgent  { background: var(--crimson-pale); color: var(--crimson); }
+  .badge-urgent::before { background: var(--crimson); }
+  .badge-watch   { background: var(--amber-pale); color: #9a6018; }
+  .badge-watch::before { background: var(--amber); }
+  .badge-passed  { background: var(--gray-pale); color: var(--slate); }
+  .badge-passed::before { background: var(--gray); }
+
+  /* Live date pill */
+  .live-date {
+    display: inline-flex; align-items: center; gap: .3rem;
+    font-family: 'JetBrains Mono', monospace; font-size: .62rem;
+    background: var(--navy); color: rgba(255,255,255,.85);
+    padding: .2rem .55rem; border-radius: 3px; width: fit-content;
+  }
+  .live-date::before { content: '◉'; font-size: .55rem; color: var(--amber-light); }
+
+  .card-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 600; color: var(--navy); line-height: 1.3; }
+
+  .card-meta { display: flex; flex-direction: column; gap: .2rem; }
+  .card-dates, .card-cfp {
+    font-family: 'Source Serif 4', serif; font-size: .78rem;
+    font-weight: 500; color: var(--text-light);
+    display: flex; align-items: center; gap: .4rem;
+  }
+  .card-dates svg, .card-cfp svg { flex-shrink: 0; opacity: .5; }
+  .card.status-open   .card-cfp { color: var(--green); }
+  .card.status-urgent .card-cfp { color: var(--crimson); }
+  .card.status-watch  .card-cfp { color: #9a6018; }
+  .card.status-passed .card-cfp { color: var(--slate); }
+  .card.status-open .card-cfp svg,
+  .card.status-urgent .card-cfp svg,
+  .card.status-watch .card-cfp svg { opacity: .7; }
+
+  .card-notes {
+    font-family: 'Source Serif 4', serif; font-size: .8rem;
+    font-weight: 300; color: var(--text-light); line-height: 1.5; flex: 1;
+  }
+  .card-notes strong { font-weight: 500; color: var(--text); }
+
+  .card-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: .4rem; padding-top: .75rem;
+    border-top: 1px solid var(--border); gap: .5rem;
+  }
+  .card-tags { display: flex; flex-wrap: wrap; gap: .3rem; flex: 1; }
+  .tag {
+    font-family: 'Source Serif 4', serif; font-size: .68rem;
+    padding: .15rem .45rem; border-radius: 3px;
+    background: var(--gray-pale); color: var(--slate-light);
+    border: 1px solid var(--border);
   }
 
-  .sec-num {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-style: italic;
-    font-size: 1.05rem;
-    color: var(--gold);
-    min-width: 1.6rem;
-    flex-shrink: 0;
+  .visit-btn {
+    font-family: 'Source Serif 4', serif; font-size: .78rem; font-weight: 500;
+    padding: .4rem .85rem; border-radius: 6px; border: none; cursor: pointer;
+    text-decoration: none; display: inline-flex; align-items: center;
+    gap: .35rem; white-space: nowrap; transition: all .2s;
   }
+  .card.status-open .visit-btn, .card.status-urgent .visit-btn { background: var(--green); color: #fff; }
+  .card.status-open .visit-btn:hover, .card.status-urgent .visit-btn:hover { background: var(--green-light); }
+  .card.status-watch .visit-btn { background: var(--amber); color: var(--navy); }
+  .card.status-watch .visit-btn:hover { background: var(--amber-light); }
+  .card.status-passed .visit-btn { background: var(--gray-pale); color: var(--slate); border: 1px solid var(--border); }
+  .card.status-passed .visit-btn:hover { background: var(--border); }
 
-  .sec-title {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 1rem;
-    font-weight: 700;
-    letter-spacing: .03em;
-    color: var(--navy);
-  }
+  .card.hidden { display: none !important; }
+  .section.hidden { display: none !important; }
 
-  .sec-rule {
-    flex: 1;
-    height: 1px;
-    background: var(--faint);
-    margin-left: .4rem;
-  }
-
-  /* ─────────────── CARDS ─────────────── */
-
-  .event {
-    background: var(--card);
-    border: 1px solid var(--card-bd);
-    border-left: 4px solid var(--faint);
-    margin-bottom: .9rem;
-    display: grid;
-    grid-template-columns: 130px 1fr;
-    transition: box-shadow .18s ease, border-left-color .18s ease;
-    animation: riseIn .5s ease both;
-  }
-
-  .event:hover {
-    box-shadow: 0 3px 18px rgba(27, 42, 74, .09);
-  }
-
-  .event.urgent { border-left-color: var(--crimson); }
-  .event.soon   { border-left-color: var(--amber); }
-  .event.future { border-left-color: var(--navy); }
-  .event.noise  {
-    opacity: .45;
-    border-left-style: dashed;
-    border-left-color: var(--faint);
-  }
-
-  .date-col {
-    padding: 1.2rem 1rem 1.2rem 1.1rem;
-    border-right: 1px solid var(--card-bd);
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    justify-content: flex-start;
-    background: rgba(0,0,0,0.012);
-  }
-
-  .date-main {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: .82rem;
-    font-weight: 600;
-    color: var(--navy);
-    text-align: right;
-    line-height: 1.45;
-  }
-
-  .date-days {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: .64rem;
-    text-align: right;
-    margin-top: .35rem;
-    letter-spacing: .02em;
-  }
-  .days-urgent { color: var(--crimson); font-weight: 600; }
-  .days-soon   { color: var(--amber); }
-  .days-future { color: var(--muted); }
-  .days-past   { color: var(--faint); }
-
-  .info-col {
-    padding: 1.15rem 1.35rem;
-  }
-
-  .ev-type {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: .6rem;
-    font-weight: 600;
-    letter-spacing: .14em;
-    text-transform: uppercase;
-    margin-bottom: .3rem;
-    color: var(--muted);
-  }
-  .ev-type.t-deadline   { color: var(--crimson); }
-  .ev-type.t-conference { color: var(--navy); }
-  .ev-type.t-recording  { color: var(--sage); }
-  .ev-type.t-noise      { color: var(--faint); }
-
-  .conf-name {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 1.08rem;
-    font-weight: 600;
-    color: var(--navy);
-    line-height: 1.3;
-    margin-bottom: .25rem;
-  }
-
-  .conf-name a {
-    color: inherit;
-    text-decoration: none;
-    border-bottom: 1px solid var(--faint2);
-    transition: border-color .15s;
-  }
-  .conf-name a:hover { border-bottom-color: var(--navy); }
-
-  .ev-desc {
-    font-size: .97rem;
-    color: var(--muted);
-    line-height: 1.5;
-  }
-
-  /* ─────────────── TIMELINE ─────────────── */
-
-  .timeline {
-    margin-top: .9rem;
-    padding-top: .8rem;
-    border-top: 1px solid var(--faint2);
-  }
-
-  .tl-item {
-    display: grid;
-    grid-template-columns: 68px 1fr;
-    gap: .6rem;
-    font-family: 'Crimson Pro', Georgia, serif;
-    font-size: .92rem;
-    padding: .2rem 0 .2rem 1rem;
-    position: relative;
-  }
-
-  .tl-item::before {
-    content: '';
-    position: absolute;
-    left: .1rem;
-    top: .55rem;
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: var(--faint);
-  }
-
-  .tl-item.tl-past {
-    opacity: .38;
-  }
-  .tl-item.tl-past .tl-date { text-decoration: line-through; }
-
-  .tl-item.tl-upcoming::before { background: var(--navy); opacity: .35; }
-
-  .tl-item.tl-main {
-    background: rgba(27,42,74,.05);
-    padding: .35rem .6rem .35rem 1rem;
-    margin-left: -.3rem;
-  }
-  .tl-item.tl-main::before {
-    background: var(--navy);
-    opacity: 1;
-    left: .4rem;
-  }
-  .tl-item.tl-main .tl-date { color: var(--navy); font-weight: 600; }
-  .tl-item.tl-main .tl-desc { color: var(--navy); }
-
-  .tl-date { color: var(--muted); }
-  .tl-desc  { color: var(--muted); }
-
-  /* ─────────────── NO-DATA GRID ─────────────── */
-
-  .no-data-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: .45rem;
-    margin-top: .2rem;
-  }
-
-  .no-data-tag {
-    border: 1px solid var(--card-bd);
-    background: var(--card);
-    padding: .3rem .85rem;
-    font-family: 'Crimson Pro', Georgia, serif;
-    font-size: .95rem;
-  }
-
-  .no-data-tag a {
-    color: var(--muted);
-    text-decoration: none;
-    transition: color .15s;
-  }
-  .no-data-tag a:hover { color: var(--navy); }
-
-  /* ─────────────── FOOTER ─────────────── */
-
+  /* ── FOOTER ── */
   footer {
-    margin-top: 4.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--faint2);
-    text-align: center;
+    background: var(--navy); padding: 1.5rem 2rem;
+    text-align: center; font-family: 'Source Serif 4', serif;
+    font-size: .78rem; font-weight: 300; color: rgba(255,255,255,.35);
   }
+  footer strong { color: rgba(255,255,255,.6); font-weight: 400; }
+  footer a { color: rgba(255,255,255,.45); }
 
-  .footer-text {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: .6rem;
-    color: var(--faint);
-    letter-spacing: .08em;
-    text-transform: uppercase;
-  }
+  /* ── SVG ICONS ── */
+  .icon-cal { display: inline-block; }
 
-  /* ─────────────── ANIMATION ─────────────── */
-
-  @keyframes riseIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ─────────────── RESPONSIVE ─────────────── */
-
-  @media (max-width: 560px) {
-    .page { padding: 2rem 1rem 4rem; }
-    h1 { font-size: 2rem; }
-    .event { grid-template-columns: 1fr; }
-    .date-col {
-      border-right: none;
-      border-bottom: 1px solid var(--card-bd);
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-      padding: .7rem 1rem;
-    }
-    .date-main { font-size: .8rem; }
-    .header-meta { flex-direction: column; gap: .3rem; }
-    .meta-cell + .meta-cell { border-left: none; border-top: 1px solid var(--card-bd); }
+  @media (max-width: 600px) {
+    .card-grid { grid-template-columns: 1fr; }
+    .stats { gap: 1rem; }
+    .legend { gap: .75rem; }
+    header { padding: 2rem 1rem 2rem; }
+    main { padding: 1.5rem 1rem 3rem; }
   }
 </style>
 </head>
 <body>
-<div class="page">
 
-  <!-- ══════ HEADER ══════ -->
-  <header>
-    <div class="header-top-rule">
-      <span class="header-orn">✦ &nbsp; ✦ &nbsp; ✦</span>
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="header-eyebrow">AI in Libraries · Conference &amp; Events Tracker</div>
+    <h1>Conferences &amp;<br><em>Presentation Venues</em></h1>
+    <div class="header-sub-card">
+      <div class="line1">31 venues tracked — libraries, AI, instruction &amp; higher ed</div>
+      <div class="line2">Scraped monthly · Built for Yulia Brusova · Updated May 1, 2026</div>
     </div>
-    <div class="header-kicker">Annual Bulletin &nbsp;·&nbsp; 2026 Edition</div>
-    <h1>AI <span>in</span> Libraries</h1>
-    <div class="header-sub">Conference &amp; Events Tracker</div>
-    <div class="header-meta">
-      <span class="meta-cell">Analyzed Apr 21, 2026</span>
-      <span class="meta-cell">14 sources monitored</span>
-      <span class="meta-cell">5 active events</span>
-    </div>
-    <hr class="header-bot-rule">
-  </header>
-
-  <!-- ══════ I. UPCOMING DEADLINES ══════ -->
-  <div class="section-header">
-    <span class="sec-num">I.</span>
-    <span class="sec-title">Upcoming Deadlines</span>
-    <span class="sec-rule"></span>
+    <div class="header-updated">Live at conference-tracker-seven.vercel.app · 31 sources monitored</div>
   </div>
+</header>
 
-  <div class="event urgent" style="animation-delay:.08s">
-    <div class="date-col">
-      <div class="date-main">May 4,<br>2026</div>
-      <div class="date-days days-urgent">13 days</div>
-    </div>
-    <div class="info-col">
-      <div class="ev-type t-deadline">Call for Speakers</div>
-      <div class="conf-name"><a href="https://speakers.infotoday.com/il-speakers/" target="_blank">Internet Librarian Connect</a></div>
-      <div class="ev-desc">"Orchestrating Intelligent Libraries: Technology &amp; Human-Centric AI"</div>
-    </div>
+<!-- FILTER BAR -->
+<div class="filter-section">
+  <div class="filter-inner">
+    <span class="filter-label">Filter</span>
+    <button class="filter-btn active" data-filter="all">All Venues</button>
+    <button class="filter-btn" data-filter="open">Open CFP</button>
+    <button class="filter-btn" data-filter="watch">Watch for Next</button>
+    <button class="filter-btn" data-filter="regional">Regional</button>
+    <button class="filter-btn" data-filter="live">Has Live Dates</button>
   </div>
+</div>
 
-  <div class="event future" style="animation-delay:.14s">
-    <div class="date-col">
-      <div class="date-main">Dec 3,<br>2026</div>
-      <div class="date-days days-future">226 days</div>
-    </div>
-    <div class="info-col">
-      <div class="ev-type t-recording">Recording</div>
-      <div class="conf-name"><a href="https://www.amigos.org/services/online-conference/practical-paths-to-the-ai-enhanced-library" target="_blank">Amigos: AI-Enhanced Library</a></div>
-      <div class="ev-desc">Recording registration closes — live event already occurred</div>
-    </div>
-  </div>
+<main>
 
-  <!-- ══════ II. UPCOMING CONFERENCES ══════ -->
-  <div class="section-header">
-    <span class="sec-num">II.</span>
-    <span class="sec-title">Upcoming Conferences</span>
-    <span class="sec-rule"></span>
-  </div>
-
-  <div class="event soon" style="animation-delay:.2s">
-    <div class="date-col">
-      <div class="date-main">May 12–14,<br>2026</div>
-      <div class="date-days days-soon">21 days</div>
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat stat-urgent">
+      <div class="stat-number">1</div>
+      <div class="stat-label">Deadline this week</div>
     </div>
-    <div class="info-col">
-      <div class="ev-type t-conference">Conference &nbsp;·&nbsp; In-Person</div>
-      <div class="conf-name"><a href="https://alianational.alia.org.au/program/" target="_blank">ALIA National 2026</a></div>
-      <div class="ev-desc">3-day in-person conference — full program published</div>
+    <div class="stat-divider"></div>
+    <div class="stat stat-open">
+      <div class="stat-number">4</div>
+      <div class="stat-label">Open CFPs now</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <div class="stat-number">16</div>
+      <div class="stat-label">Live dates scraped</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <div class="stat-number">31</div>
+      <div class="stat-label">Venues tracked</div>
     </div>
   </div>
 
-  <div class="event future" style="animation-delay:.26s">
-    <div class="date-col">
-      <div class="date-main">Sep 16–17,<br>2026</div>
-      <div class="date-days days-future">148 days</div>
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--crimson)"></div><span class="legend-label">Deadline This Week</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div><span class="legend-label">Open CFP</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div><span class="legend-label">Watch for Next</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--gray)"></div><span class="legend-label">CFP Passed</span></div>
+    <div class="legend-item"><span style="font-family:JetBrains Mono,monospace;font-size:.65rem;background:var(--navy);color:rgba(255,255,255,.8);padding:.15rem .45rem;border-radius:3px">◉ live date</span> scraped from website</div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SECTION 1: AI in Libraries — Direct Fit    -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="section" id="sec1">
+    <div class="section-header">
+      <span class="section-number">Section 01</span>
+      <h2 class="section-title">AI in Libraries — Direct Fit</h2>
+      <span class="section-count">8 venues</span>
     </div>
-    <div class="info-col">
-      <div class="ev-type t-conference">Conference &nbsp;·&nbsp; Hybrid</div>
-      <div class="conf-name"><a href="https://ai4lam.org/fantastic-futures/fantastic-futures-2026-trust-in-the-loop/" target="_blank">Fantastic Futures 2026</a></div>
-      <div class="ev-desc">FF2026: Trust in the Loop — Washington DC area</div>
-      <div class="timeline">
-        <div class="tl-item tl-past">
-          <span class="tl-date">Feb 9</span>
-          <span class="tl-desc">Call for proposals opened</span>
+    <div class="card-grid">
+
+      <!-- GAIL -->
+      <div class="card status-watch" data-status="watch" data-region="false" data-live="false">
+        <span class="badge badge-watch">Watch for 2027 CFP</span>
+        <div class="card-name">GAIL — Generative AI in Libraries Virtual Conference</div>
+        <div class="card-meta">
+          <div class="card-dates"><svg class="icon-cal" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>July 13–16, 2026 · Annual virtual · 1–4pm EDT</div>
+          <div class="card-cfp"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>2026 CFP closed Mar 30 — watch for 2027</div>
         </div>
-        <div class="tl-item tl-past">
-          <span class="tl-date">Mar 6</span>
-          <span class="tl-desc">Submission portal opened</span>
-        </div>
-        <div class="tl-item tl-past">
-          <span class="tl-date">Apr 16</span>
-          <span class="tl-desc">Proposals due</span>
-        </div>
-        <div class="tl-item tl-upcoming">
-          <span class="tl-date">Jun 1</span>
-          <span class="tl-desc">Decisions &amp; notifications to authors</span>
-        </div>
-        <div class="tl-item tl-upcoming">
-          <span class="tl-date">Jul 6</span>
-          <span class="tl-desc">Conference schedule released</span>
-        </div>
-        <div class="tl-item tl-upcoming">
-          <span class="tl-date">Sep 14</span>
-          <span class="tl-desc">Affiliate meetings &amp; tours</span>
-        </div>
-        <div class="tl-item tl-upcoming">
-          <span class="tl-date">Sep 15</span>
-          <span class="tl-desc">AI4LAM Member Day + Workshops</span>
-        </div>
-        <div class="tl-item tl-main tl-upcoming">
-          <span class="tl-date">Sep 16–17</span>
-          <span class="tl-desc">Main conference — Trust in the Loop</span>
-        </div>
-        <div class="tl-item tl-upcoming">
-          <span class="tl-date">Sep 18</span>
-          <span class="tl-desc">Closing affiliate events &amp; tours</span>
+        <div class="card-notes">The <strong>most directly relevant venue.</strong> Dedicated solely to librarians sharing AI experiences. Free virtual, strong community. Contact: gailconferencesupport@googlegroups.com</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">Virtual</span><span class="tag">Free</span><span class="tag">AI-focused</span></div>
+          <a href="https://shsulibraryguides.org/genailibraries" target="_blank" class="visit-btn">Visit ↗</a>
         </div>
       </div>
+
+      <!-- ai4Libraries -->
+      <div class="card status-watch" data-status="watch" data-region="false" data-live="false">
+        <span class="badge badge-watch">Watch for 2026 CFP</span>
+        <div class="card-name">ai4Libraries Conference</div>
+        <div class="card-meta">
+          <div class="card-dates"><svg class="icon-cal" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Annual fall virtual conference</div>
+          <div class="card-cfp"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>CFP typically opens summer — check site</div>
+        </div>
+        <div class="card-notes">Dedicated annual conference on AI in libraries, archives, and museums. Fully virtual with international audience.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">Virtual</span><span class="tag">Annual</span><span class="tag">AI-focused</span></div>
+          <a href="https://www.ai4libraries.org/" target="_blank" class="visit-btn">Visit ↗</a>
+        </div>
+      </div>
+
+      <!-- Library 2.0 Perspectives on AI -->
+      <div class="card status-watch" data-status="watch" data-region="false" data-live="false">
+        <span class="badge badge-watch">Watch for 2027</span>
+        <div class="card-name">Library 2.0 — "Perspectives on AI" Mini-Conference</div>
+        <div class="card-meta">
+          <div class="card-dates"><svg class="icon-cal" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Annual · April 2026 edition passed</div>
+          <div class="card-cfp"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Watch for 2027 CFP (usually opens March)</div>
+        </div>
+        <div class="card-notes">3-hour virtual event, 10–15 crowd-sourced 30-min presentations. <strong>Free; 3,200+ registrants in 2026.</strong> CA Libraries Learn + CLA + CA State Library.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">Virtual</span><span class="tag">Free</span><span class="tag">Community</span></div>
+          <a href="https://www.library20.com/miniconferences/perspectives-on-ai" target="_blank" class="visit-btn">Visit ↗</a>
+        </div>
+      </div>
+
+      <!-- Library 2.0 AI Leadership -->
+      <div class="card status-watch" data-status="watch" data-region="false" data-live="true">
+        <span class="badge badge-watch">Upcoming — May 20</span>
+        <div class="card-name">Library 2.0 — AI Leadership Conference</div>
+        <div class="card-meta">
+          <div class="card-dates"><svg class="icon-cal" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="live-date">May 20, 2026</span></div>
+          <div class="card-cfp"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Monitor site for CFP &amp; registration</div>
+        </div>
+        <div class="card-notes">Broader Library 2.0 AI programming targeting library leaders. Date scraped live from site — confirm status before registering.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">Virtual</span><span class="tag">Leadership</span><span class="tag">Live date</span></div>
+          <a href="https://www.library20.com/ai-leadership-2026" target="_blank" class="visit-btn">Visit ↗</a>
+        </div>
+      </div>
+
+      <!-- SAIL -->
+      <div class="card status-watch" data-status="watch" data-region="false" data-live="false">
+        <span class="badge badge-watch">Watch for 2027</span>
+        <div class="card-name">SAIL — Libraries and AI</div>
+        <div class="card-meta">
+          <div class="card-dates"><svg class="icon-cal" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Annual · 2026 edition TBD</div>
+          <div class="card-cfp"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Monitor CDLC site for announcements</div>
+        </div>
+        <div class="card-notes">CDLC-hosted conference on Libraries and AI. Previous conference Oct 2024. No 2026 dates scraped yet — watch for announcement.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">Virtual</span><span class="tag">AI-focused</span></div>
+          <a href="https://cdlc.org/libraries-and-ai/SAIL" target="_blank" class="visit-btn">Visit ↗</a>
+        </div>
+      </div>
+
+      <!-- Fantastic Futures -->
+      <div class="card status-watch" data-status="watch" data-region="false" data-live="true">
+        <span class="badge badge-watch">Conference Sep 16–17</span>
+        <div class="card-name">Fantastic Futures 2026 — AI4LAM</div>
+        <div class="card-meta">
+          <div class="card-dates"><svg class="icon-cal" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="live-date">Sep 16–17, 2026</span> · Washington DC area</div>
+          <div class="card-cfp"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Proposals were due Apr 16 — decisions Jun 1</div>
+        </div>
+        <div class="card-notes"><strong>Trust in the Loop</strong> — annual international AI for Libraries, Archives &amp; Museums conference. Sep 14: affiliate events; Sep 15: Member Day; Sep 16–17: main conference; Sep 18: closing.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">In-person</span><span class="tag">International</span><span class="tag">Live dates</span></div>
+          <a href="https://ai4lam.org/fantastic-futures/fantastic-futures-2026-trust-in-the-loop/" target="_blank" class="visit-btn">Visit ↗</a>
+        </div>
+      </div>
+
+      <!-- Library 2.0 Conferences (general) -->
+      <div class="card status-watch" data-status="watch" data-region="false" data-live="false">
+        <span class="badge badge-watch">Watch for CFP</span>
+        <div class="card-name">Library 2.0 — Conferences Hub</div>
+        <div class="card-meta">
+          <div class="card-dates"><svg class="icon-cal" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Multiple annual virtual events</div>
+          <div class="card-cfp"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Check page for current open CFPs</div>
+        </div>
+        <div class="card-notes">Directory of Library 2.0's full virtual conference and webinar schedule. Free, community-driven, wide-ranging AI and library topics throughout the year.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">Virtual</span><span class="tag">Free</span><span class="tag">Hub</span></div>
+          <a href="https://www.library20.com/page/conferences" target="_blank" class="visit-btn">Visit ↗</a>
+        </div>
+      </div>
+
+      <!-- AI & Academic Libraries Eventbrite -->
+      <div class="card status-watch" data-status="watch" data-region="false" data-live="false">
+        <span class="badge badge-watch">Watch for Next</span>
+        <div class="card-name">AI &amp; Academic Libraries Online Conference</div>
+        <div class="card-meta">
+          <div class="card-dates"><svg class="icon-cal" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Annual · previous edition TBD</div>
+          <div class="card-cfp"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Monitor Eventbrite listing for 2026/2027</div>
+        </div>
+        <div class="card-notes">Community-organized online conference specifically on AI in academic libraries. Direct audience overlap with this talk's content and framing.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">Virtual</span><span class="tag">Academic libs</span></div>
+          <a href="https://www.eventbrite.com/e/ai-and-academic-libraries-an-online-conference-tickets-1123272140209" target="_blank" class="visit-btn">Visit ↗</a>
+        </div>
+      </div>
+
     </div>
   </div>
 
-  <!-- ══════ III. NO 2026 DATES ══════ -->
-  <div class="section-header">
-    <span class="sec-num">III.</span>
-    <span class="sec-title">No 2026 Dates Found</span>
-    <span class="sec-rule"></span>
+
+  <!-- ════════════════════════════════════════════════ -->
+  <!-- SECTION 2: Major Library Conferences            -->
+  <!-- ════════════════════════════════════════════════ -->
+  <div class="section" id="sec2">
+    <div class="section-header">
+      <span class="section-number">Section 02</span>
+      <h2 class="section-title">Major Library Conferences</h2>
+      <span class="section-count">8 venues</span>
+    </div>
+    <div class="card-grid">
+
+      <!-- Internet Librarian Speakers — URGENT -->
+      <div class="card status-urgent" data-status="open" data-region="false" data-live="true">
+        <span class="badge badge-urgent">Deadline May 4 — 3 days!</span>
+        <div class="card-name">Internet Librarian Connect — Call for Speakers</div>
+        <div class="card-meta">
+          <div class="card-dates"><svg class="icon-cal" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="live-date">May 4, 2026</span> · Speaker submissions close</div>
+          <div class="card-cfp"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Theme: "Orchestrating Intelligent Libraries: Technology &amp; Human-Centric AI"</div>
+        </div>
+        <div class="card-notes"><strong>Act now — 3 days left.</strong> Deadline scraped live. Conference Oct 27–29, 2026 (online). Published by Information Today.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">Virtual</span><span class="tag">AI &amp; Tech</span><span class="tag">Live date</span></div>
+          <a href="https://speakers.infotoday.com/il-speakers/" target="_blank" class="visit-btn">Visit ↗</a>
+        </div>
+      </div>
+
+      <!-- ACRL 2027 -->
+      <div class="card status-open" data-status="open" data-region="false" data-live="true">
+        <span class="badge badge-open">CFP Open — Oct 16, 2026</span>
+        <div class="card-name">ACRL 2027 Conference</div>
+        <div class="card-meta">
+          <div class="card-dates"><svg class="icon-cal" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="live-date">Apr 7–10, 2027</span> · Portland, OR + Online</div>
+          <div class="card-cfp"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Lightning/poster/virtual proposals due <strong>Oct 16, 2026</strong></div>
+        </div>
+        <div class="card-notes">The <strong>flagship academic libraries conference.</strong> Full papers were due June 5. Lightning talks, posters, and virtual presentations open until October 16.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">In-person + Online</span><span class="tag">Flagship</span><span class="tag">Live dates</span></div>
+          <a href="https://acrl.ala.org/acrlinsider/acrl-2027-call-for-proposals/" target="_blank" class="visit-btn">Visit ↗</a>
+        </div>
+      </div>
+
+      <!-- ALA Annual 2026 -->
+      <div class="card status-passed" data-status="passed" data-region="false" data-live="true">
+        <span class="badge badge-passed">CFP Passed — Conference Jun 25–29</span>
+        <div class="card-name">ALA Annual Conference 2026 — ACRL Programs</div>
+        <div class="card-meta">
+          <div class="card-dates"><svg class="icon-cal" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="live-date">Jun 25–29, 2026</span> · Chicago, IL</div>
+          <div class="card-cfp"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>2026 ACRL program CFP closed — watch for 2027</div>
+        </div>
+        <div class="card-notes">Largest library conference in North America. Conference upcoming but 2026 ACRL program CFP has closed. Attend to network; submit for 2027 ALA Annual.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">In-person</span><span class="tag">Chicago</span><span class="tag">Live date</span></div>
+          <a href="https://acrl.ala.org/acrlinsider/call-for-acrl-education-program-proposals-for-2026-ala-annual-conference/" target="_blank" class="visit-btn">Visit ↗</a>
+        </div>
+      </div>
+
+      <!-- Iowa Library Association -->
+      <div class="card status-open" data-status="open" data-region="true" data-live="true">
+        <span class="badge badge-open">CFP Open</span>
+        <div class="card-name">Iowa Library Association Annual Conference</div>
+        <div class="card-meta">
+          <div class="card-dates"><svg class="icon-cal" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="live-date">Oct 7–9, 2026</span> · Cedar Rapids, IA</div>
+          <div class="card-cfp"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>CFP currently open — check site for deadline</div>
+        </div>
+        <div class="card-notes">Midwestern state association — <strong>geographically accessible</strong> from Missouri. Diverse audience of public, academic, and special librarians.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">Regional</span><span class="tag">Midwest</span><span class="tag">Live dates</span></div>
+          <a href="https://www.iowalibraryassociation.org/" target="_blank" class="visit-btn">Visit ↗</a>
+        </div>
+      </div>
+
+      <!-- Missouri Library Association -->
+      <div class="card status-open" data-status="open" data-region="true" data-live="true">
+        <span class="badge badge-open">Watch for CFP</span>
+        <div class="card-name">Missouri Library Association Annual Conference</div>
+        <div class="card-meta">
+          <div class="card-dates"><svg class="icon-cal" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="live-date">Oct 6–7, 2026</span></div>
+          <div class="card-cfp"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Monitor molib.org for CFP announcement</div>
+        </div>
+        <div class="card-notes"><strong>Home state conference.</strong> Most natural first step for a Missouri-based community college library associate. Strong professional networking opportunity.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">Regional</span><span class="tag">Missouri</span><span class="tag">Home base</span><span class="tag">Live date</span></div>
+          <a href="https://www.molib.org/Annual-Conference-2026" target="_blank" class="visit-btn">Visit ↗</a>
+        </div>
+      </div>
+
+      <!-- ALIA National 2026 -->
+      <div class="card status-watch" data-status="watch" data-region="false" data-live="true">
+        <span class="badge badge-watch">Conference May 12–14</span>
+        <div class="card-name">ALIA National 2026</div>
+        <div class="card-meta">
+          <div class="card-dates"><svg class="icon-cal" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="live-date">May 12–14, 2026</span> · Australia</div>
+          <div class="card-cfp"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Full program published — upcoming in 11 days</div>
+        </div>
+        <div class="card-notes">Australian Library and Information Association national conference. 3-day full program published and live. International context for vibe coding as a library tool.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">International</span><span class="tag">In-person</span><span class="tag">Live dates</span></div>
+          <a href="https://alianational.alia.org.au/program/" target="_blank" class="visit-btn">Visit ↗</a>
+        </div>
+      </div>
+
+      <!-- DLF Forum 2026 -->
+      <div class="card status-watch" data-status="watch" data-region="false" data-live="true">
+        <span class="badge badge-watch">Watch for CFP</span>
+        <div class="card-name">DLF Forum 2026 — Digital Library Federation</div>
+        <div class="card-meta">
+          <div class="card-dates"><svg class="icon-cal" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="live-date">Oct 14–15, 2026</span> · Virtual (CLIR)</div>
+          <div class="card-cfp"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Watch diglib.org for CFP details</div>
+        </div>
+        <div class="card-notes">Virtual forum covering digital library practice, research, and pedagogy. New "Digital Storytelling Presentations" format — 40-min narrative sessions. Hosted by CLIR.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">Virtual</span><span class="tag">Digital libraries</span><span class="tag">Live date</span></div>
+          <a href="https://www.diglib.org/dlf-events/" target="_blank" class="visit-btn">Visit ↗</a>
+        </div>
+      </div>
+
+      <!-- Internet Librarian Connect (separate from speakers) -->
+      <div class="card status-watch" data-status="watch" data-region="false" data-live="false">
+        <span class="badge badge-watch">Watch for CFP</span>
+        <div class="card-name">Internet Librarian Connect 2026</div>
+        <div class="card-meta">
+          <div class="card-dates"><svg class="icon-cal" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Oct 27–29, 2026 · Online</div>
+          <div class="card-cfp"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Speaker deadline May 4 (see above)</div>
+        </div>
+        <div class="card-notes">"The Leading Virtual Conference on Technology, Data, and AI for Libraries." Published by Information Today. <strong>Speaker deadline May 4</strong> — submit via the Speakers page card above.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">Virtual</span><span class="tag">AI &amp; Tech</span></div>
+          <a href="https://internet-librarian.infotoday.com/2026" target="_blank" class="visit-btn">Visit ↗</a>
+        </div>
+      </div>
+
+    </div>
   </div>
 
-  <div class="no-data-grid">
-    <span class="no-data-tag"><a href="https://www.charleston-hub.com/the-charleston-conference/call-for-papers/" target="_blank">Charleston Conference CFP</a></span>
-    <span class="no-data-tag"><a href="https://www.ai4libraries.org/2025-schedule" target="_blank">ai4Libraries</a></span>
-    <span class="no-data-tag"><a href="https://www.library20.com/page/conferences" target="_blank">Library 2.0 Conferences</a></span>
-    <span class="no-data-tag"><a href="https://www.eventbrite.com/e/ai-and-academic-libraries-an-online-conference-tickets-1123272140209" target="_blank">AI &amp; Academic Libraries</a></span>
-    <span class="no-data-tag"><a href="https://carl-acrl.wildapricot.org/carl-2026-schedule" target="_blank">CARL 2026</a></span>
-    <span class="no-data-tag"><a href="https://www.nwmissouri.edu/library/brickandclick/index.htm" target="_blank">Brick &amp; Click</a></span>
+
+  <!-- ════════════════════════════════════════════════ -->
+  <!-- SECTION 3: Broader Library & Higher Ed          -->
+  <!-- ════════════════════════════════════════════════ -->
+  <div class="section" id="sec3">
+    <div class="section-header">
+      <span class="section-number">Section 03</span>
+      <h2 class="section-title">Broader Library &amp; Higher Ed</h2>
+      <span class="section-count">10 venues</span>
+    </div>
+    <div class="card-grid">
+
+      <!-- ASIS&T -->
+      <div class="card status-passed" data-status="passed" data-region="false" data-live="false">
+        <span class="badge badge-passed">CFP Passed — Plan for 2027</span>
+        <div class="card-name">ASIS&amp;T Annual Meeting 2026</div>
+        <div class="card-meta">
+          <div class="card-dates"><svg class="icon-cal" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Oct 16–20, 2026 · Bangkok + Virtual Dec 3–4</div>
+          <div class="card-cfp"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Paper CFP closed Apr 9, 2026</div>
+        </div>
+        <div class="card-notes">Association for Information Science and Technology (merged with SLA 2025). Virtual satellite Dec 3–4. LIS education and AI papers welcomed.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">International</span><span class="tag">Virtual option</span></div>
+          <a href="https://www.asist.org/am26/" target="_blank" class="visit-btn">Visit ↗</a>
+        </div>
+      </div>
+
+      <!-- ISS-SLC -->
+      <div class="card status-watch" data-status="watch" data-region="false" data-live="false">
+        <span class="badge badge-watch">Watch for CFP</span>
+        <div class="card-name">ISS-SLC: Information Science Summit &amp; Special Libraries Conference</div>
+        <div class="card-meta">
+          <div class="card-dates"><svg class="icon-cal" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Jun 6–9, 2026 · Albuquerque, NM</div>
+          <div class="card-cfp"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Joint ASIS&amp;T + former SLA — AI &amp; Emerging Tech track</div>
+        </div>
+        <div class="card-notes">Joint conference of ASIS&amp;T and former Special Libraries Association. Track: <strong>"AI &amp; Emerging Technologies."</strong> Broad information professional audience.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">In-person</span><span class="tag">AI track</span></div>
+          <a href="https://sla.org/" target="_blank" class="visit-btn">Visit ↗</a>
+        </div>
+      </div>
+
+      <!-- EDUCAUSE -->
+      <div class="card status-passed" data-status="passed" data-region="false" data-live="false">
+        <span class="badge badge-passed">CFP Closed — Watch for 2027</span>
+        <div class="card-name">EDUCAUSE Annual Conference 2026</div>
+        <div class="card-meta">
+          <div class="card-dates"><svg class="icon-cal" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Sep 29 – Oct 2, 2026 · Denver + Online Oct 14–15</div>
+          <div class="card-cfp"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>2026 CFP closed Apr 7 — plan ahead for 2027</div>
+        </div>
+        <div class="card-notes">Premier higher education technology conference. AI is a central theme every year. Audience: IT leaders, academic innovators, library technologists.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">Higher Ed</span><span class="tag">In-person + Online</span></div>
+          <a href="https://events.educause.edu/annual-conference" target="_blank" class="visit-btn">Visit ↗</a>
+        </div>
+      </div>
+
+      <!-- League for Innovation -->
+      <div class="card status-watch" data-status="watch" data-region="false" data-live="true">
+        <span class="badge badge-watch">Watch for 2027 CFP</span>
+        <div class="card-name">League for Innovation — Innovations Conference</div>
+        <div class="card-meta">
+          <div class="card-dates"><svg class="icon-cal" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="live-date">Mar 15–18, 2026</span> · Indianapolis (past)</div>
+          <div class="card-cfp"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>2027 CFP TBD — annual March conference</div>
+        </div>
+        <div class="card-notes"><strong>Community college focused.</strong> Presenters must work at a community college or non-profit university — Yulia qualifies. AI, instruction, and innovation tracks.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">Community College</span><span class="tag">In-person</span><span class="tag">Live date</span></div>
+          <a href="https://www.league.org/inn2026" target="_blank" class="visit-btn">Visit ↗</a>
+        </div>
+      </div>
+
+      <!-- LOEX -->
+      <div class="card status-watch" data-status="watch" data-region="false" data-live="false">
+        <span class="badge badge-watch">Watch for 2027 CFP</span>
+        <div class="card-name">LOEX Annual Conference</div>
+        <div class="card-meta">
+          <div class="card-dates"><svg class="icon-cal" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Annual May · 2026 was Norfolk, VA (past)</div>
+          <div class="card-cfp"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>2027 CFP usually opens fall</div>
+        </div>
+        <div class="card-notes">Library Orientation Exchange — the go-to conference for <strong>information literacy instruction.</strong> Perfect fit given the talk's info literacy framing. 50-min presentations + workshops.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">Info Literacy</span><span class="tag">Instruction</span></div>
+          <a href="https://loexconference.org/" target="_blank" class="visit-btn">Visit ↗</a>
+        </div>
+      </div>
+
+      <!-- ER&L -->
+      <div class="card status-watch" data-status="watch" data-region="false" data-live="false">
+        <span class="badge badge-watch">Watch for CFP — Spring 2026</span>
+        <div class="card-name">ER&amp;L Fest 2027 — Electronic Resources &amp; Libraries</div>
+        <div class="card-meta">
+          <div class="card-dates"><svg class="icon-cal" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>March 2027 · Details TBD</div>
+          <div class="card-cfp"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>CFP priorities announced Spring 2026 — community-driven</div>
+        </div>
+        <div class="card-notes">Community-driven CFP with emerging tech and e-resources focus. 2027 gathering confirmed — watch site for details and CFP in spring 2026.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">Emerging Tech</span><span class="tag">Annual</span></div>
+          <a href="https://electroniclibrarian.org/conference-info/" target="_blank" class="visit-btn">Visit ↗</a>
+        </div>
+      </div>
+
+      <!-- Computers in Libraries -->
+      <div class="card status-watch" data-status="watch" data-region="false" data-live="true">
+        <span class="badge badge-watch">Watch for 2027 CFP</span>
+        <div class="card-name">Computers in Libraries</div>
+        <div class="card-meta">
+          <div class="card-dates"><svg class="icon-cal" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="live-date">Mar 16–18, 2027</span> · Annual · Arlington, VA</div>
+          <div class="card-cfp"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Watch computersinlibraries.infotoday.com for CFP</div>
+        </div>
+        <div class="card-notes">"Library Technology and Innovation Conference." AI-driven discovery is an explicit track. 5 simultaneous tracks + full-day workshops. 2027 date scraped live.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">Library Tech</span><span class="tag">In-person</span><span class="tag">Live date</span></div>
+          <a href="https://computersinlibraries.infotoday.com/" target="_blank" class="visit-btn">Visit ↗</a>
+        </div>
+      </div>
+
+      <!-- Charleston -->
+      <div class="card status-watch" data-status="watch" data-region="false" data-live="false">
+        <span class="badge badge-watch">Watch for CFP</span>
+        <div class="card-name">Charleston Conference</div>
+        <div class="card-meta">
+          <div class="card-dates"><svg class="icon-cal" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Annual November · Charleston, SC</div>
+          <div class="card-cfp"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Monitor charleston-hub.com for CFP</div>
+        </div>
+        <div class="card-notes">Leading conference on issues in book and serial acquisition for research libraries. Growing AI and digital scholarship focus in recent years.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">In-person</span><span class="tag">Research libs</span></div>
+          <a href="https://www.charleston-hub.com/the-charleston-conference/call-for-papers/" target="_blank" class="visit-btn">Visit ↗</a>
+        </div>
+      </div>
+
+      <!-- Brick & Click -->
+      <div class="card status-watch" data-status="watch" data-region="true" data-live="false">
+        <span class="badge badge-watch">Watch for 2027 CFP</span>
+        <div class="card-name">Brick &amp; Click Academic Library Conference</div>
+        <div class="card-meta">
+          <div class="card-dates"><svg class="icon-cal" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Annual November · Northwest Missouri State, Maryville, MO</div>
+          <div class="card-cfp"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>2027 CFP typically opens spring/summer</div>
+        </div>
+        <div class="card-notes"><strong>Home conference — this talk debuted here in 2026.</strong> Consider submitting an updated or follow-up version for 2027 with new data, expanded examples, or workshop format.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">Regional</span><span class="tag">Missouri</span><span class="tag">Returning speaker</span></div>
+          <a href="https://www.nwmissouri.edu/library/brickandclick/index.htm" target="_blank" class="visit-btn">Visit ↗</a>
+        </div>
+      </div>
+
+      <!-- CARL -->
+      <div class="card status-watch" data-status="watch" data-region="false" data-live="false">
+        <span class="badge badge-watch">Watch for CFP</span>
+        <div class="card-name">CARL 2026 — California Academic &amp; Research Libraries</div>
+        <div class="card-meta">
+          <div class="card-dates"><svg class="icon-cal" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>2026 · dates TBD</div>
+          <div class="card-cfp"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Monitor site for schedule and CFP</div>
+        </div>
+        <div class="card-notes">California academic library association biennial conference. Strong focus on innovation, instruction, and emerging technology in academic library contexts.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">Academic libs</span><span class="tag">Regional</span></div>
+          <a href="https://carl-acrl.wildapricot.org/carl-2026-schedule" target="_blank" class="visit-btn">Visit ↗</a>
+        </div>
+      </div>
+
+    </div>
   </div>
 
-  <!-- ══════ IV. FILTERED ENTRIES ══════ -->
-  <div class="section-header">
-    <span class="sec-num">IV.</span>
-    <span class="sec-title">Filtered — Not Real Event Dates</span>
-    <span class="sec-rule"></span>
+
+  <!-- ════════════════════════════════════════════════ -->
+  <!-- SECTION 4: Online / Webinar Venues              -->
+  <!-- ════════════════════════════════════════════════ -->
+  <div class="section" id="sec4">
+    <div class="section-header">
+      <span class="section-number">Section 04</span>
+      <h2 class="section-title">Online &amp; Webinar Venues</h2>
+      <span class="section-count">5 venues</span>
+    </div>
+    <div class="card-grid">
+
+      <!-- Library Journal -->
+      <div class="card status-watch" data-status="watch" data-region="false" data-live="true">
+        <span class="badge badge-watch">Watch for 2026 CFP</span>
+        <div class="card-name">Library Journal — AI and Academic Libraries Online Conference</div>
+        <div class="card-meta">
+          <div class="card-dates"><svg class="icon-cal" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="live-date">Nov 16–17, 2026</span> · Annual fall online</div>
+          <div class="card-cfp"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Watch Library Journal for fall 2026 CFP</div>
+        </div>
+        <div class="card-notes"><strong>Exceptionally targeted audience</strong> — exactly the demographic this talk is designed for. Watch the LJ website in summer 2026 for the CFP. Nov date scraped live.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">Virtual</span><span class="tag">AI-focused</span><span class="tag">Academic libs</span><span class="tag">Live date</span></div>
+          <a href="https://course.libraryjournal.com/products/ai-and-academic-libraries-conference" target="_blank" class="visit-btn">Visit ↗</a>
+        </div>
+      </div>
+
+      <!-- Magna -->
+      <div class="card status-open" data-status="open" data-region="false" data-live="true">
+        <span class="badge badge-open">CFP Open — Check Site</span>
+        <div class="card-name">Magna Publications — AI in Education Conference</div>
+        <div class="card-meta">
+          <div class="card-dates"><svg class="icon-cal" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="live-date">Dec 1–2, 2026</span> · Annual online</div>
+          <div class="card-cfp"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>CFP listed as open — verify current status</div>
+        </div>
+        <div class="card-notes">AI in higher education teaching and learning. Faculty and academic staff audience — includes library professionals. Strong fit for the paraprofessional practitioner angle.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">Virtual</span><span class="tag">Higher Ed</span><span class="tag">Teaching</span><span class="tag">Live date</span></div>
+          <a href="https://www.magnapubs.com/ai-in-education-conference/call-for-proposals/" target="_blank" class="visit-btn">Visit ↗</a>
+        </div>
+      </div>
+
+      <!-- IU Indianapolis -->
+      <div class="card status-watch" data-status="watch" data-region="false" data-live="false">
+        <span class="badge badge-watch">Watch for Future Iterations</span>
+        <div class="card-name">Sustaining the Future of Academic Libraries — IU Indianapolis</div>
+        <div class="card-meta">
+          <div class="card-dates"><svg class="icon-cal" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>2026 edition complete — check for future</div>
+          <div class="card-cfp"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Monitor IU Indianapolis DLIS for future CFP</div>
+        </div>
+        <div class="card-notes">IU Indianapolis DLIS online conference on academic library challenges and innovations. MLIS-adjacent audience — good fit for Yulia's student-practitioner perspective.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">Virtual</span><span class="tag">Academic libs</span><span class="tag">MLIS</span></div>
+          <a href="https://blogs.iu.edu/dlis/2026/01/28/sustaining-the-future-of-academic-libraries-an-online-conference/" target="_blank" class="visit-btn">Visit ↗</a>
+        </div>
+      </div>
+
+      <!-- Amigos -->
+      <div class="card status-watch" data-status="watch" data-region="false" data-live="true">
+        <span class="badge badge-watch">Recording Registration Open</span>
+        <div class="card-name">Amigos — Practical Paths to the AI-Enhanced Library</div>
+        <div class="card-meta">
+          <div class="card-dates"><svg class="icon-cal" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="live-date">Dec 3, 2026</span> · Recording registration closes</div>
+          <div class="card-cfp"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Live event occurred; watch for 2027 CFP</div>
+        </div>
+        <div class="card-notes">Amigos Library Services annual AI conference. Live event already occurred — recording registration open until Dec 3. Watch for 2027 speaker and CFP announcement.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">Virtual</span><span class="tag">Annual</span><span class="tag">Live date</span></div>
+          <a href="https://www.amigos.org/services/online-conference/practical-paths-to-the-ai-enhanced-library" target="_blank" class="visit-btn">Visit ↗</a>
+        </div>
+      </div>
+
+      <!-- Lehigh -->
+      <div class="card status-watch" data-status="watch" data-region="false" data-live="false">
+        <span class="badge badge-watch">Watch for 2027</span>
+        <div class="card-name">Lehigh AI Summit</div>
+        <div class="card-meta">
+          <div class="card-dates"><svg class="icon-cal" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Annual · 2nd summit was Jan 13, 2026 (past)</div>
+          <div class="card-cfp"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2"/></svg>Watch Lehigh Library Technology Services for 3rd summit</div>
+        </div>
+        <div class="card-notes">Lehigh University Library Technology Services annual AI summit. "How Lehigh Is Putting AI to Work" — practical focus. Watch for 3rd annual summit announcement.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">Higher Ed</span><span class="tag">Annual</span></div>
+          <a href="https://lts.lehigh.edu/news/how-lehigh-putting-ai-work-insights-2nd-annual-ai-summit" target="_blank" class="visit-btn">Visit ↗</a>
+        </div>
+      </div>
+
+    </div>
   </div>
 
-  <div class="event noise" style="animation-delay:.32s">
-    <div class="date-col">
-      <div class="date-main">Feb 24</div>
-      <div class="date-days days-past">past</div>
-    </div>
-    <div class="info-col">
-      <div class="ev-type t-noise">Page Metadata</div>
-      <div class="conf-name">GAIL Schedule (SHSU)</div>
-      <div class="ev-desc">"Last Updated: Feb 24, 2026" — LibGuide page update timestamp, not a conference date</div>
-    </div>
-  </div>
+</main>
 
-  <div class="event noise" style="animation-delay:.36s">
-    <div class="date-col">
-      <div class="date-main">Feb 26</div>
-      <div class="date-days days-past">past</div>
-    </div>
-    <div class="info-col">
-      <div class="ev-type t-noise">Post Date</div>
-      <div class="conf-name">Library 2.0 Perspectives on AI</div>
-      <div class="ev-desc">Recording post date — conference already occurred, recordings published Feb 26</div>
-    </div>
-  </div>
+<footer>
+  <strong>AI in Libraries — Conference &amp; Events Tracker</strong> · 31 venues · Scraped May 1, 2026 · Built for <strong>Yulia Brusova</strong><br>
+  Live at <a href="https://conference-tracker-seven.vercel.app" target="_blank">conference-tracker-seven.vercel.app</a> · Auto-updates 1st of each month via GitHub Actions
+</footer>
 
-  <div class="event noise" style="animation-delay:.40s">
-    <div class="date-col">
-      <div class="date-main">Apr 14</div>
-      <div class="date-days days-past">past</div>
-    </div>
-    <div class="info-col">
-      <div class="ev-type t-noise">Page Metadata</div>
-      <div class="conf-name">SAIL — Libraries and AI</div>
-      <div class="ev-desc">"Last Updated: Apr 14, 2026" — LibGuide timestamp. Actual SAIL conference was Oct 2024</div>
-    </div>
-  </div>
+<script>
+  const buttons = document.querySelectorAll('.filter-btn');
+  const cards = document.querySelectorAll('.card');
 
-  <div class="event noise" style="animation-delay:.44s">
-    <div class="date-col">
-      <div class="date-main">Jan 23</div>
-      <div class="date-days days-past">past</div>
-    </div>
-    <div class="info-col">
-      <div class="ev-type t-noise">Article Date</div>
-      <div class="conf-name">Lehigh AI Summit</div>
-      <div class="ev-desc">News article published Jan 23 about the summit that happened Jan 13 — both past</div>
-    </div>
-  </div>
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
 
-  <footer>
-    <p class="footer-text">AI in Libraries Conference Tracker &nbsp;·&nbsp; Updated April 21, 2026 &nbsp;·&nbsp; 14 Sources Monitored</p>
-  </footer>
+      cards.forEach(card => {
+        const status = card.dataset.status;
+        const isRegional = card.dataset.region === 'true';
+        const hasLive = card.dataset.live === 'true';
+        let show = false;
+        if (filter === 'all') show = true;
+        else if (filter === 'open') show = status === 'open';
+        else if (filter === 'watch') show = status === 'watch';
+        else if (filter === 'regional') show = isRegional;
+        else if (filter === 'live') show = hasLive;
+        card.classList.toggle('hidden', !show);
+      });
 
-</div>
+      document.querySelectorAll('.section').forEach(sec => {
+        const visible = sec.querySelectorAll('.card:not(.hidden)');
+        sec.classList.toggle('hidden', visible.length === 0);
+      });
+    });
+  });
+</script>
 </body>
 </html>

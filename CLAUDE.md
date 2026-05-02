@@ -1,6 +1,6 @@
 # ConferenceTracker
 
-Scrapes 14 AI-in-libraries conference websites monthly for 2026 dates. Outputs compact `raw-data.json`. Claude reads it, analyzes, and builds `index.html`. Vercel serves it.
+Scrapes 31 AI-in-libraries conference websites monthly for 2026/2027 dates. Outputs compact `raw-data.json`. Claude reads it, analyzes, and builds `index.html`. Vercel serves it.
 
 ## Workflow
 1. GitHub Action runs (1st of month or manual) → scrapes → commits `raw-data.json`
@@ -20,21 +20,45 @@ node scrape.js       # → raw-data.json
 git add index.html && git push
 ```
 
-## Sites tracked (14)
-1. Internet Librarian Speakers (infotoday.com)
-2. Charleston Conference CFP
-3. ai4Libraries Schedule
-4. GAIL Schedule (SHSU)
+## Sites tracked (31)
+### AI in Libraries — Direct Fit
+1. GAIL Schedule (SHSU)
+2. ai4Libraries
+3. Library 2.0 Perspectives on AI
+4. Library 2.0 AI Leadership
 5. Library 2.0 Conferences
-6. Library 2.0 Perspectives on AI
-7. Amigos: AI-Enhanced Library
-8. SAIL — Libraries and AI
-9. AI & Academic Libraries (Eventbrite)
-10. Lehigh AI Summit
-11. Fantastic Futures 2026
-12. ALIA National 2026
-13. CARL 2026 Schedule
-14. Brick & Click Libraries
+6. SAIL — Libraries and AI
+7. Fantastic Futures 2026
+8. AI & Academic Libraries (Eventbrite)
+
+### Major Library Conferences
+9. ACRL 2027 CFP
+10. ALA Annual 2026 ACRL Programs
+11. Internet Librarian Speakers
+12. Internet Librarian Connect 2026
+13. Iowa Library Association
+14. Missouri Library Association
+15. DLF Forum 2026
+16. ALIA National 2026
+
+### Broader Library & Higher Ed
+17. ASIS&T Annual Meeting 2026
+18. ISS-SLC 2026
+19. EDUCAUSE Annual Conference
+20. League for Innovation
+21. LOEX Annual Conference
+22. ER&L Fest 2027
+23. Computers in Libraries
+24. Charleston Conference CFP
+25. CARL 2026 Schedule
+26. Brick & Click Libraries
+
+### Online / Webinar Venues
+27. Library Journal AI Conference
+28. Magna AI in Education
+29. IU Indianapolis — Academic Libs
+30. Amigos: AI-Enhanced Library
+31. Lehigh AI Summit
 
 ## Scraper design
 - Native `fetch`, no npm dependencies, Node 18+
